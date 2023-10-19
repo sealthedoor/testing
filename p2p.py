@@ -13,7 +13,6 @@ udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 # Generate a unique identifier based on the MAC address
 def get_unique_identifier():
     mac = uuid.UUID(int=uuid.getnode()).hex[-12:]
-    print(mac)
     return mac
 
 # Retrieve your local IP address
@@ -24,7 +23,6 @@ def get_local_ip():
         s.connect(("8.8.8.8", 80))  # Connect to Google's public DNS server
         local_ip = s.getsockname()[0]  # Get the local IP address
         s.close()
-        print(local_ip)
         return local_ip
     except socket.error:
         return "Unable to determine local IP address"
@@ -46,12 +44,10 @@ def broadcast_my_ip():
                 found_devices.append(device)
 
         if len(found_devices) > 0:
-            print(f"IP: {local_ip}, MAC: {unique_identifier}")
+            print(f"Your IP: {local_ip}, Your MAC: {unique_identifier}")
             print("Found Devices:")
             for i, device in enumerate(found_devices, start=1):
                 print(f"{i}. {device}")
-
-    return(found_devices)
 
 def listen_for_broadcasts():
     udp_socket.settimeout(1)  # Set a timeout for receiving broadcasts
@@ -67,6 +63,7 @@ def listen_for_broadcasts():
                     if unique_identifier not in seen_devices:
                         seen_devices.add(unique_identifier)
                         print(f"New device found: {message} from {addr}")
+
         except socket.timeout:
             pass
 
