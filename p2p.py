@@ -1,19 +1,16 @@
-#nessery python libs
 import socket
 import threading
-print("imports done!")
-#varables
-debung = 1
+import sys
 
-print("var done!")
-#the sause
-def broadcast_message_to_network(message, port=12345):
+debug = 1
+
+def broadcast_message_to_network(message, target_ip='127.0.0.1', port=12345):
     # Create a UDP socket
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
-    # Define the broadcast address (255.255.255.255 means all devices on the local network)
-    broadcast_address = ('<broadcast>', port)
+    # Define the broadcast address
+    broadcast_address = (target_ip, port)
 
     # Broadcast the message
     udp_socket.sendto(message.encode(), broadcast_address)
@@ -21,33 +18,27 @@ def broadcast_message_to_network(message, port=12345):
     # Close the socket
     udp_socket.close()
 
-import socket
-
 def listen_for_broadcast(port=12345):
     # Create a UDP socket
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-    # Bind the socket to the specified port
-    udp_socket.bind(('', port))
+    # Bind the socket to the specified port and the wildcard address
+    udp_socket.bind(('0.0.0.0', port))
 
     print(f"Listening for broadcasts on port {port}...")
 
     while True:
-        data, addr = udp_socket.recvfrom(1024)
-        print(f"Received a broadcast from {addr}: {data.decode()}")
-
-
-
+        try:
+            data, addr = udp_socket.recvfrom(1024)
+            print(f"Received a broadcast from {addr}: {data.decode()}")
+        except KeyboardInterrupt:
+            print("Ctrl+C pressed. Exiting.")
+            sys.exit()
 
 if __name__ == "__main__":
     message = "Hello, world!"
-    broadcast_message_to_network(message)
+    target_ip = input("Enter the target IP address (default is 127.0.0.1): ") or '127.0.0.1'
+    broadcast_message_to_network(message, target_ip)
 
 if __name__ == "__main__":
     listen_for_broadcast()
-print("def done!")
-
-
-
-
-
