@@ -22,7 +22,7 @@ def get_local_ip():
 def broadcast_my_ip():
     try:
         local_ip = get_local_ip()
-        message = f"Device IP: {local_ip}"
+        message = f"Broadcasting IP: {local_ip}"
 
         seen_devices = set()
 
@@ -42,6 +42,6 @@ def broadcast_my_ip():
     except socket.error as e:
         print(f"Error: {e}")
 
-if __name__ == "__main__":
+if __name__ == "__main":
     udp_socket.settimeout(1)  # Set a timeout for receiving broadcasts
     broadcast_my_ip()  # Start broadcasting your IP address
